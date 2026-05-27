@@ -116,7 +116,7 @@
                 <span id="q-pronoun" class="flex items-center justify-center px-4 bg-gray-100 dark:bg-gray-850 border border-gray-200 dark:border-gray-750 rounded-l-lg font-bold text-lg min-w-[90px] text-blue-600 dark:text-blue-400">
                     Elles
                 </span>
-                <input type="text" id="answer-input" placeholder="z.B. sont allées" autocomplete="off" class="w-full px-4 py-3 bg-white dark:bg-gray-850 border-y border-r border-gray-200 dark:border-gray-750 rounded-r-lg text-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition">
+                <input type="text" id="answer-input" placeholder="z.B. sont allées" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" class="w-full px-4 py-3 bg-white dark:bg-gray-850 border-y border-r border-gray-200 dark:border-gray-750 rounded-r-lg text-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition">
             </div>
         </div>
 
@@ -137,7 +137,6 @@
 </div>
 
 <script>
-    // Die Verbenliste enthält jetzt ausschliesslich den zu tippenden Verb-Teil
     const verbData = {
         "acheter": {
             translation: "kaufen",
@@ -339,7 +338,6 @@
         }
     };
 
-    // Feste Pronomen-Zuordnungen
     const displayPronouns = {
         0: "Je",
         1: "Tu",
@@ -445,8 +443,6 @@
         const correctAnswerRaw = verbData[selectedVerb][selectedTense][pronounIndex];
         let displayPronoun = displayPronouns[pronounIndex];
         
-        // Smarter "Je" zu "J'" Wechsel
-        // Prüft, ob das zu tippende Verb mit einem Vokal oder 'h' beginnt
         if (pronounIndex === 0) {
             if (/^[aeiouéèêh]/i.test(correctAnswerRaw)) {
                 displayPronoun = "J'";
