@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Französisch Verbentrainer - DD8</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: { extend: { colors: { brand: { light: '#3b82f6', dark: '#60a5fa' } } } }
+        }
+    </script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-gray-50 text-gray-900 dark:bg-gray-950 dark:text-gray-100 min-h-screen transition-colors duration-200">
+
+<!-- ── Modal Overlay ── -->
+<div id="modal-overlay" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center hidden">
+    <div class="bg-white dark:bg-gray-900 rounded-2xl p-6 shadow-2xl border border-gray-200 dark:border-gray-700 max-w-sm w-full mx-4">
+        <div id="modal-icon" class="text-4xl mb-3 text-center"></div>
+        <h3 id="modal-title" class="text-lg font-bold mb-2 text-center text-gray-900 dark:text-white"></h3>
+        <p id="modal-body" class="text-sm text-gray-500 dark:text-gray-400 mb-5 text-center leading-relaxed"></p>
+        <div id="modal-buttons" class="flex flex-col gap-2"></div>
+    </div>
+</div>
+
+<div class="max-w-2xl mx-auto px-4 py-8">
+
+    <!-- Header -->
+    <header class="flex justify-between items-center mb-8 border-b pb-4 border-gray-200 dark:border-gray-800">
+        <div>
+            <h1 class="text-2xl font-bold tracking-tight text-blue-600 dark:text-blue-400">Verbentrainer DD8</h1>
+            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Massgeschneidert für das finale Examen</p>
+        </div>
+        <button id="theme-toggle" class="p-2.5 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition">
+            <i data-lucide="moon" class="w-5 h-5 dark:hidden"></i>
+            <i data-lucide="sun" class="w-5 h-5 hidden dark:block"></i>
+        </button>
+    </header>
+
+    <!-- ── Setup View ── -->
+    <main id="setup-view" class="bg-white dark:bg-gray-900 rounded-xl p-6 shadow-sm border border-gray-100 dark:border-gray-800">
+        <p class="text-sm text-gray-600 dark:text-gray-300 mb-6">
+            Wähle die Verben und Zeiten aus. Richtig beantwortete Karten fallen weg – erst wenn du alle hast, ist die Runde vorbei.
+        </p>
+
+        <!-- Zeiten -->
+        <section class="mb-8">
+            <h2 class="text-base font-semibold mb-3 flex items-center gap-2">
+                <i data-lucide="calendar" class="w-4 h-4 text-blue-500"></i>
+                Zeiten (Temps)
+            </h2>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <label class="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-800/50 rounded-lg border border-gray-200 dark:border-gray-700 cursor-pointer hover:border-blue-400 dark:hover:border-blue-500 transition">
+                    <input type="checkbox" value="Présent" class="tense-cb w-4 h-4 text-blue-600 rounded border-gray-300" checked>
+                    <span class="text-sm font-medium">Présent</span>
+                </label>
+                <label class="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-800/50 rounded-lg border border-gray-200 dark:border-gray-700 cursor-pointer hover:border-blue-400 dark:hover:border-blue-500 transition">
+                    <input type="checkbox" value="Passé composé" class="tense-cb w-4 h-4 text-blue-600 rounded border-gray-300" checked>
+                    <span class="text-sm font-medium">Passé composé</span>
+                </label>
+                <label class="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-800/50 rounded-lg border border-gray-200 dark:border-gray-700 cursor-pointer hover:border-blue-400 dark:hover:border-blue-500 transition">
+                    <input type="checkbox" value="Imparfait" class="tense-cb w-4 h-4 text-blue-600 rounded border-gray-300" checked>
+                    <span class="text-sm font-medium">Imparfait</span>
+                </label>
+            </div>
+        </section>
+
+        <!-- Verben -->
+        <section class="mb-8">
+            <div class="flex justify-between items-center mb-3">
+                <h2 class="text-base font-semibold flex items-center gap-2">
+                    <i data-lucide="book-open" class="w-4 h-4 text-blue-500"></i>
+                    Verben (Verbes)
+                </h2>
+                <div class="flex gap-2">
+                    <button onclick="toggleAllVerbs(true)" class="text-xs bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 px-2.5 py-1.5 rounded font-medium transition">Alle</button>
+                    <button onclick="toggleAllVerbs(false)" class="text-xs bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 px-2.5 py-1.5 rounded font-medium transition">Keine</button>
+                </div>
+            </div>
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 max-h-80 overflow-y-auto pr-2" id="verbs-container"></div>
+        </section>
+
+        <button onclick="startPractice()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg shadow-sm transition flex items-center justify-center gap-2">
+            Trainer starten
+            <i data-lucide="play" class="w-4 h-4"></i>
+        </button>
+    </main>
+
+    <!-- ── Practice View ── -->
+    <main id="practice-view" class="bg-white dark:bg-gray-900 rounded-xl p-6 shadow-sm border border-gray-100 dark:border-gray-800 hidden">
+
+        <!-- Question State -->
+        <div id="question-state">
+            <!-- Top bar -->
+            <div class="flex justify-between items-center mb-4 text-sm">
+                <div class="flex items-center gap-2 text-gray-500 dark:text-gray-400">
+                    <i data-lucide="award" class="w-4 h-4 text-yellow-500"></i>
+                    <span id="session-stats" class="font-mono font-semibold text-gray-700 dark:text-gray-200 tabular-nums">0 / 0</span>
+                    <span class="text-xs text-gray-400 dark:text-gray-500">richtig</span>
+                </div>
+                <button onclick="confirmBackToSetup()" class="text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1 font-medium transition text-xs">
+                    <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i>
+                    Auswahl ändern
+                </button>
+            </div>
+
+            <!-- Progress bar -->
+            <div class="w-full bg-gray-100 dark:bg-gray-800 rounded-full h-2 mb-6 overflow-hidden">
+                <div id="progress-bar" class="bg-blue-500 h-2 rounded-full transition-all duration-500" style="width:0%"></div>
+            </div>
+
+            <!-- Question card -->
+            <div class="text-center py-6 mb-6 bg-gray-50 dark:bg-gray-800/30 rounded-xl border border-gray-100 dark:border-gray-800">
+                <span id="q-tense" class="text-xs font-semibold px-2.5 py-1 rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-300 uppercase tracking-wider">PRÉSENT</span>
+                <h3 id="q-verb" class="text-3xl font-bold mt-3 text-gray-800 dark:text-white">aller</h3>
+                <p id="q-meaning" class="text-sm text-gray-400 dark:text-gray-500 mt-1 italic">(gehen)</p>
+            </div>
+
+            <!-- Input -->
+            <div class="mb-6">
+                <label for="answer-input" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Konjugiere:</label>
+                <div class="flex items-stretch rounded-lg shadow-sm">
+                    <span id="q-pronoun" class="flex items-center justify-center px-4 bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-l-lg font-bold text-lg min-w-[90px] text-blue-600 dark:text-blue-400">Je</span>
+                    <input type="text" id="answer-input" placeholder="z.B. sont allées" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false"
+                        class="w-full px-4 py-3 bg-white dark:bg-gray-850 border-y border-r border-gray-200 dark:border-gray-700 rounded-r-lg text-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+                </div>
+            </div>
+
+            <!-- Buttons -->
+            <button id="check-btn" onclick="checkAnswer()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg transition">
+                Prüfen
+            </button>
+            <button id="next-btn" onclick="nextQuestion()" class="w-full bg-gray-800 dark:bg-gray-200 text-white dark:text-gray-900 hover:bg-gray-900 dark:hover:bg-white font-semibold py-3 px-4 rounded-lg transition hidden">
+                Nächstes Verb →
+            </button>
+
+            <div id="feedback-box" class="mt-6 p-4 rounded-xl hidden"></div>
+        </div>
+
+        <!-- Completion State -->
+        <div id="completion-state" class="hidden text-center py-10">
+            <div class="text-6xl mb-4">🎉</div>
+            <h3 class="text-2xl font-bold text-emerald-600 dark:text-emerald-400 mb-2">Runde geschafft!</h3>
+            <p class="text-gray-500 dark:text-gray-400 text-sm mb-3">Du hast alle Kombinationen richtig konjugiert.</p>
+            <p class="text-5xl font-bold text-gray-800 dark:text-white mb-8" id="completion-score"></p>
+            <button onclick="backToSetup()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg transition flex items-center justify-center gap-2">
+                <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                Zurück zur Auswahl
+            </button>
+        </div>
+    </main>
+
+</div>
+
+<script>
+// ── Verb data ──────────────────────────────────────────────────────────────
+const verbData = {
+    "acheter":   { translation:"kaufen",              "Présent":["achète","achètes","achète","achetons","achetez","achètent"],            "Imparfait":["achetais","achetais","achetait","achetions","achetiez","achetaient"],         "Passé composé":["ai acheté","as acheté","a acheté","avons acheté","avez acheté","ont acheté"] },
+    "aller":     { translation:"gehen",               "Présent":["vais","vas","va","allons","allez","vont"],                             "Imparfait":["allais","allais","allait","allions","alliez","allaient"],                    "Passé composé":["suis allé","es allé","est allé","sommes allés","êtes allés","sont allées"] },
+    "appeler":   { translation:"rufen, anrufen",      "Présent":["appelle","appelles","appelle","appelons","appelez","appellent"],        "Imparfait":["appelais","appelais","appelait","appelions","appeliez","appelaient"],         "Passé composé":["ai appelé","as appelé","a appelé","avons appelé","avez appelé","ont appelé"] },
+    "attendre":  { translation:"warten",              "Présent":["attends","attends","attend","attendons","attendez","attendent"],        "Imparfait":["attendais","attendais","attendait","attendions","attendiez","attendaient"],   "Passé composé":["ai attendu","as attendu","a attendu","avons attendu","avez attendu","ont attendu"] },
+    "avoir":     { translation:"haben",               "Présent":["ai","as","a","avons","avez","ont"],                                    "Imparfait":["avais","avais","avait","avions","aviez","avaient"],                          "Passé composé":["ai eu","as eu","a eu","avons eu","avez eu","ont eu"] },
+    "boire":     { translation:"trinken",             "Présent":["bois","bois","boit","buvons","buvez","boivent"],                       "Imparfait":["buvais","buvais","buvait","buvions","buviez","buvaient"],                    "Passé composé":["ai bu","as bu","a bu","avons bu","avez bu","ont bu"] },
+    "chanter":   { translation:"singen",              "Présent":["chante","chantes","chante","chantons","chantez","chantent"],            "Imparfait":["chantais","chantais","chantait","chantions","chantiez","chantaient"],         "Passé composé":["ai chanté","as chanté","a chanté","avons chanté","avez chanté","ont chanté"] },
+    "commencer": { translation:"beginnen",            "Présent":["commence","commences","commence","commençons","commencez","commencent"],"Imparfait":["commençais","commençais","commençait","commencions","commenciez","commençaient"],"Passé composé":["ai commencé","as commencé","a commencé","avons commencé","avez commencé","ont commencé"] },
+    "conduire":  { translation:"fahren, lenken",      "Présent":["conduis","conduis","conduit","conduisons","conduisez","conduisent"],    "Imparfait":["conduisais","conduisais","conduisait","conduisions","conduisiez","conduisaient"],"Passé composé":["ai conduit","as conduit","a conduit","avons conduit","avez conduit","ont conduit"] },
+    "connaître": { translation:"kennen",              "Présent":["connais","connais","connaît","connaissons","connaissez","connaissent"], "Imparfait":["connaissais","connaissais","connaissait","connaissions","connaissiez","connaissaient"],"Passé composé":["ai connu","as connu","a connu","avons connu","avez connu","ont connu"] },
+    "devoir":    { translation:"müssen",              "Présent":["dois","dois","doit","devons","devez","doivent"],                       "Imparfait":["devais","devais","devait","devions","deviez","devaient"],                    "Passé composé":["ai dû","as dû","a dû","avons dû","avez dû","ont dû"] },
+    "dire":      { translation:"sagen",               "Présent":["dis","dis","dit","disons","dites","disent"],                           "Imparfait":["disais","disais","disait","disions","disiez","disaient"],                    "Passé composé":["ai dit","as dit","a dit","avons dit","avez dit","ont dit"] },
+    "dormir":    { translation:"schlafen",            "Présent":["dors","dors","dort","dormons","dormez","dorment"],                     "Imparfait":["dormais","dormais","dormait","dormions","dormiez","dormaient"],               "Passé composé":["ai dormi","as dormi","a dormi","avons dormi","avez dormi","ont dormi"] },
+    "écrire":    { translation:"schreiben",           "Présent":["écris","écris","écrit","écrivons","écrivez","écrivent"],               "Imparfait":["écrivais","écrivais","écrivait","écrivions","écriviez","écrivaient"],         "Passé composé":["ai écrit","as écrit","a écrit","avons écrit","avez écrit","ont écrit"] },
+    "envoyer":   { translation:"schicken",            "Présent":["envoie","envoies","envoie","envoyons","envoyez","envoient"],           "Imparfait":["envoyais","envoyais","envoyait","envoyions","envoyiez","envoyaient"],         "Passé composé":["ai envoyé","as envoyé","a envoyé","avons envoyé","avez envoyé","ont envoyé"] },
+    "être":      { translation:"sein",                "Présent":["suis","es","est","sommes","êtes","sont"],                             "Imparfait":["étais","étais","était","étions","étiez","étaient"],                          "Passé composé":["ai été","as été","a été","avons été","avez été","ont été"] },
+    "faire":     { translation:"machen",              "Présent":["fais","fais","fait","faisons","faites","font"],                        "Imparfait":["faisais","faisais","faisait","faisions","faisiez","faisaient"],               "Passé composé":["ai fait","as fait","a fait","avons fait","avez fait","ont fait"] },
+    "finir":     { translation:"beenden",             "Présent":["finis","finis","finit","finissons","finissez","finissent"],            "Imparfait":["finissais","finissais","finissait","finissions","finissiez","finissaient"],   "Passé composé":["ai fini","as fini","a fini","avons fini","avez fini","ont fini"] },
+    "lire":      { translation:"lesen",               "Présent":["lis","lis","lit","lisons","lisez","lisent"],                           "Imparfait":["lisais","lisais","lisait","lisions","lisiez","lisaient"],                    "Passé composé":["ai lu","as lu","a lu","avons lu","avez lu","ont lu"] },
+    "manger":    { translation:"essen",               "Présent":["mange","manges","mange","mangeons","mangez","mangent"],                "Imparfait":["mangeais","mangeais","mangeait","mangions","mangiez","mangeaient"],           "Passé composé":["ai mangé","as mangé","a mangé","avons mangé","avez mangé","ont mangé"] },
+    "mettre":    { translation:"stellen, legen",      "Présent":["mets","mets","met","mettons","mettez","mettent"],                     "Imparfait":["mettais","mettais","mettait","mettions","mettiez","mettaient"],               "Passé composé":["ai mis","as mis","a mis","avons mis","avez mis","ont mis"] },
+    "ouvrir":    { translation:"öffnen",              "Présent":["ouvre","ouvres","ouvre","ouvrons","ouvrez","ouvrent"],                 "Imparfait":["ouvrais","ouvrais","ouvrait","ouvrions","ouvriez","ouvraient"],               "Passé composé":["ai ouvert","as ouvert","a ouvert","avons ouvert","avez ouvert","ont ouvert"] },
+    "partir":    { translation:"weggehen",            "Présent":["pars","pars","part","partons","partez","partent"],                     "Imparfait":["partais","partais","partait","partions","partiez","partaient"],               "Passé composé":["suis parti","es parti","est parti","sommes partis","êtes partis","sont parties"] },
+    "pouvoir":   { translation:"können",              "Présent":["peux","peux","peut","pouvons","pouvez","peuvent"],                     "Imparfait":["pouvais","pouvais","pouvait","pouvions","pouviez","pouvaient"],               "Passé composé":["ai pu","as pu","a pu","avons pu","avez pu","ont pu"] },
+    "prendre":   { translation:"nehmen",              "Présent":["prends","prends","prend","prenons","prenez","prennent"],               "Imparfait":["prenais","prenais","prenait","prenions","preniez","prenaient"],               "Passé composé":["ai pris","as pris","a pris","avons pris","avez pris","ont pris"] },
+    "recevoir":  { translation:"bekommen, empfangen", "Présent":["reçois","reçois","reçoit","recevons","recevez","reçoivent"],           "Imparfait":["recevais","recevais","recevait","recevions","receviez","recevaient"],         "Passé composé":["ai reçu","as reçu","a reçu","avons reçu","avez reçu","ont reçu"] },
+    "répéter":   { translation:"wiederholen",         "Présent":["répète","répètes","répète","répétons","répétez","répètent"],           "Imparfait":["répétais","répétais","répétait","répétions","répétiez","répétaient"],         "Passé composé":["ai répété","as répété","a répété","avons répété","avez répété","ont répété"] },
+    "rire":      { translation:"lachen",              "Présent":["ris","ris","rit","rions","riez","rient"],                              "Imparfait":["riais","riais","riait","riions","riiez","riaient"],                          "Passé composé":["ai ri","as ri","a ri","avons ri","avez ri","ont ri"] },
+    "savoir":    { translation:"wissen",              "Présent":["sais","sais","sait","savons","savez","savent"],                        "Imparfait":["savais","savais","savait","savions","saviez","savaient"],                    "Passé composé":["ai su","as su","a su","avons su","avez su","ont su"] },
+    "venir":     { translation:"kommen",              "Présent":["viens","viens","vient","venons","venez","viennent"],                   "Imparfait":["venais","venais","venait","venions","veniez","venaient"],                    "Passé composé":["suis venu","es venu","est venu","sommes venus","êtes venus","sont venues"] },
+    "vivre":     { translation:"leben",               "Présent":["vis","vis","vit","vivons","vivez","vivent"],                           "Imparfait":["vivais","vivais","vivait","vivions","viviez","vivaient"],                    "Passé composé":["ai vécu","as vécu","a vécu","avons vécu","avez vécu","ont vécu"] },
+    "voir":      { translation:"sehen",               "Présent":["vois","vois","voit","voyons","voyez","voient"],                        "Imparfait":["voyais","voyais","voyait","voyions","voyiez","voyaient"],                    "Passé composé":["ai vu","as vu","a vu","avons vu","avez vu","ont vu"] },
+    "vouloir":   { translation:"wollen",              "Présent":["veux","veux","veut","voulons","voulez","veulent"],                     "Imparfait":["voulais","voulais","voulait","voulions","vouliez","voulaient"],               "Passé composé":["ai voulu","as voulu","a voulu","avons voulu","avez voulu","ont voulu"] }
+};
+
+const displayPronouns = { 0:"Je", 1:"Tu", 2:"Il", 3:"Nous", 4:"Vous", 5:"Elles" };
+
+// ── App state ──────────────────────────────────────────────────────────────
+let selectedVerbs  = [];
+let selectedTenses = [];
+let currentQuestion = null;
+let roundQueue   = [];   // remaining cards [{verb,tense,pronounIndex}]
+let roundTotal   = 0;
+let roundCorrect = 0;
+
+let userStats = JSON.parse(localStorage.getItem('dd8_verb_stats_v3') || '{}');
+
+const SESSION_KEY = 'dd8_session_v4';
+
+// ── Session persistence ────────────────────────────────────────────────────
+function saveSession() {
+    localStorage.setItem(SESSION_KEY, JSON.stringify({
+        selectedVerbs, selectedTenses, roundQueue, roundTotal, roundCorrect,
+        savedAt: Date.now()
+    }));
+}
+function clearSession() { localStorage.removeItem(SESSION_KEY); }
+function loadSession() {
+    try { const r = localStorage.getItem(SESSION_KEY); return r ? JSON.parse(r) : null; }
+    catch { return null; }
+}
+
+// ── Modal ──────────────────────────────────────────────────────────────────
+function showModal({ icon='', title, body, buttons }) {
+    document.getElementById('modal-icon').textContent  = icon;
+    document.getElementById('modal-title').textContent = title;
+    document.getElementById('modal-body').textContent  = body;
+    const bc = document.getElementById('modal-buttons');
+    bc.innerHTML = '';
+    buttons.forEach(({ label, style, onClick }) => {
+        const btn = document.createElement('button');
+        btn.textContent = label;
+        btn.className   = style;
+        btn.onclick = () => { hideModal(); onClick(); };
+        bc.appendChild(btn);
+    });
+    document.getElementById('modal-overlay').classList.remove('hidden');
+}
+function hideModal() { document.getElementById('modal-overlay').classList.add('hidden'); }
+
+// ── Queue helpers ──────────────────────────────────────────────────────────
+function shuffle(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+}
+function buildQueue(verbs, tenses) {
+    const q = [];
+    verbs.forEach(v => tenses.forEach(t => { for (let i=0;i<6;i++) q.push({verb:v,tense:t,pronounIndex:i}); }));
+    return shuffle(q);
+}
+
+// ── UI helpers ─────────────────────────────────────────────────────────────
+function updateStatsUI() {
+    document.getElementById('session-stats').textContent = `${roundCorrect} / ${roundTotal}`;
+    const pct = roundTotal > 0 ? (roundCorrect / roundTotal) * 100 : 0;
+    document.getElementById('progress-bar').style.width = pct + '%';
+}
+
+// ── Init ───────────────────────────────────────────────────────────────────
+function init() {
+    // Rebuild verb list
+    const container = document.getElementById('verbs-container');
+    container.innerHTML = '';
+    Object.keys(verbData).sort().forEach(verb => {
+        let stat = '';
+        if (userStats[verb] && userStats[verb].total > 0) {
+            const pct = Math.round((userStats[verb].correct / userStats[verb].total) * 100);
+            stat = `<span class="text-xs ml-auto font-bold text-emerald-500">${pct}%</span>`;
+        }
+        const lbl = document.createElement('label');
+        lbl.className = 'flex items-center gap-2 p-2.5 bg-gray-50 dark:bg-gray-800/50 rounded-lg border border-gray-200 dark:border-gray-700 cursor-pointer hover:border-blue-400 dark:hover:border-blue-500 transition text-sm';
+        lbl.innerHTML = `<input type="checkbox" value="${verb}" class="verb-cb w-4 h-4 text-blue-600 rounded border-gray-300" checked>
+                         <span class="font-medium">${verb}</span>${stat}`;
+        container.appendChild(lbl);
+    });
+
+    // Theme
+    const theme = localStorage.getItem('dd8_theme') || 'light';
+    document.documentElement.classList.toggle('dark', theme === 'dark');
+
+    // Enter key
+    document.getElementById('answer-input').addEventListener('keypress', e => {
+        if (e.key !== 'Enter') return;
+        if (!document.getElementById('check-btn').classList.contains('hidden')) checkAnswer();
+        else if (!document.getElementById('next-btn').classList.contains('hidden')) nextQuestion();
+    });
+
+    lucide.createIcons();
+
+    // Check for saved session
+    const saved = loadSession();
+    if (saved && saved.roundTotal > 0 && saved.roundQueue && saved.roundQueue.length > 0) {
+        const ts   = new Date(saved.savedAt).toLocaleTimeString('de-CH', {hour:'2-digit',minute:'2-digit'});
+        const left = saved.roundQueue.length;
+        showModal({
+            icon: '💾',
+            title: 'Gespeicherte Runde gefunden',
+            body: `${saved.roundCorrect} von ${saved.roundTotal} richtig – noch ${left} Karte${left!==1?'n':''} übrig. Gespeichert um ${ts}.`,
+            buttons: [
+                { label: 'Weitermachen', style: 'w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 px-4 rounded-lg transition',
+                  onClick: () => restoreSession(saved) },
+                { label: 'Neu starten', style: 'w-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 text-gray-700 dark:text-gray-300 font-semibold py-2.5 px-4 rounded-lg transition',
+                  onClick: () => clearSession() }
+            ]
+        });
+    }
+}
+
+function restoreSession(s) {
+    selectedVerbs  = s.selectedVerbs;
+    selectedTenses = s.selectedTenses;
+    roundQueue     = s.roundQueue;
+    roundTotal     = s.roundTotal;
+    roundCorrect   = s.roundCorrect;
+    document.getElementById('setup-view').classList.add('hidden');
+    document.getElementById('practice-view').classList.remove('hidden');
+    document.getElementById('question-state').classList.remove('hidden');
+    document.getElementById('completion-state').classList.add('hidden');
+    updateStatsUI();
+    nextQuestion();
+}
+
+// ── Theme toggle ───────────────────────────────────────────────────────────
+document.getElementById('theme-toggle').addEventListener('click', () => {
+    const dark = document.documentElement.classList.toggle('dark');
+    localStorage.setItem('dd8_theme', dark ? 'dark' : 'light');
+});
+
+function toggleAllVerbs(state) {
+    document.querySelectorAll('.verb-cb').forEach(cb => cb.checked = state);
+}
+
+// ── Start practice ─────────────────────────────────────────────────────────
+function startPractice() {
+    const verbs  = Array.from(document.querySelectorAll('.verb-cb:checked')).map(cb => cb.value);
+    const tenses = Array.from(document.querySelectorAll('.tense-cb:checked')).map(cb => cb.value);
+    if (!verbs.length || !tenses.length) {
+        alert('Bitte wähle mindestens ein Verb und eine Zeit aus!');
+        return;
+    }
+    const saved = loadSession();
+    if (saved && saved.roundTotal > 0 && saved.roundQueue && saved.roundQueue.length > 0) {
+        showModal({
+            icon: '⚠️',
+            title: 'Gespeicherten Stand überschreiben?',
+            body: `Es gibt noch einen laufenden Stand (${saved.roundCorrect}/${saved.roundTotal} richtig, ${saved.roundQueue.length} Karten übrig). Eine neue Runde löscht diesen Stand unwiderruflich.`,
+            buttons: [
+                { label: '⚠️  Ja, neue Runde starten', style: 'w-full bg-rose-600 hover:bg-rose-700 text-white font-semibold py-2.5 px-4 rounded-lg transition',
+                  onClick: () => launchRound(verbs, tenses) },
+                { label: 'Abbrechen', style: 'w-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 text-gray-700 dark:text-gray-300 font-semibold py-2.5 px-4 rounded-lg transition',
+                  onClick: () => {} }
+            ]
+        });
+    } else {
+        launchRound(verbs, tenses);
+    }
+}
+
+function launchRound(verbs, tenses) {
+    selectedVerbs  = verbs;
+    selectedTenses = tenses;
+    roundQueue     = buildQueue(verbs, tenses);
+    roundTotal     = roundQueue.length;
+    roundCorrect   = 0;
+
+    document.getElementById('setup-view').classList.add('hidden');
+    document.getElementById('practice-view').classList.remove('hidden');
+    document.getElementById('question-state').classList.remove('hidden');
+    document.getElementById('completion-state').classList.add('hidden');
+
+    updateStatsUI();
+    saveSession();
+    nextQuestion();
+}
+
+// ── Back to setup ──────────────────────────────────────────────────────────
+function confirmBackToSetup() {
+    showModal({
+        icon: '↩️',
+        title: 'Auswahl ändern?',
+        body: 'Dein Fortschritt wird gespeichert. Beim nächsten Start kannst du dort weitermachen.',
+        buttons: [
+            { label: 'Ja, zurück zur Auswahl', style: 'w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 px-4 rounded-lg transition',
+              onClick: () => backToSetup() },
+            { label: 'Weiterüben', style: 'w-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 text-gray-700 dark:text-gray-300 font-semibold py-2.5 px-4 rounded-lg transition',
+              onClick: () => {} }
+        ]
+    });
+}
+
+function backToSetup() {
+    document.getElementById('setup-view').classList.remove('hidden');
+    document.getElementById('practice-view').classList.add('hidden');
+    init();
+}
+
+// ── Next question ──────────────────────────────────────────────────────────
+function nextQuestion() {
+    if (roundQueue.length === 0) { showCompletion(); return; }
+
+    const card = roundQueue[0];
+    const rawAnswer = verbData[card.verb][card.tense][card.pronounIndex];
+    let pronoun = displayPronouns[card.pronounIndex];
+    if (card.pronounIndex === 0 && /^[aeiouéèêh]/i.test(rawAnswer)) pronoun = "J'";
+
+    currentQuestion = { verb: card.verb, tense: card.tense, pronounIndex: card.pronounIndex, displayPronoun: pronoun, correctAnswer: rawAnswer };
+
+    document.getElementById('q-verb').textContent    = card.verb;
+    document.getElementById('q-meaning').textContent = `(${verbData[card.verb].translation})`;
+    document.getElementById('q-tense').textContent   = card.tense;
+    document.getElementById('q-pronoun').textContent = pronoun;
+
+    const inp = document.getElementById('answer-input');
+    inp.value = ''; inp.disabled = false;
+    setTimeout(() => inp.focus(), 50);
+
+    document.getElementById('feedback-box').className = 'mt-6 p-4 rounded-xl hidden';
+    document.getElementById('check-btn').classList.remove('hidden');
+    document.getElementById('next-btn').classList.add('hidden');
+}
+
+// ── Check answer ───────────────────────────────────────────────────────────
+function cleanText(s) { return s.toLowerCase().trim().replace(/\s+/g,' ').replace(/['']/g,"'"); }
+
+function checkAnswer() {
+    const inp     = document.getElementById('answer-input');
+    const userAns = cleanText(inp.value);
+    if (!userAns) return;
+
+    const correctAns = cleanText(currentQuestion.correctAnswer);
+    const isCorrect  = userAns === correctAns;
+
+    if (!userStats[currentQuestion.verb]) userStats[currentQuestion.verb] = { correct:0, total:0 };
+    userStats[currentQuestion.verb].total++;
+
+    const fb = document.getElementById('feedback-box');
+    fb.classList.remove('hidden');
+
+    if (isCorrect) {
+        roundQueue.shift();
+        roundCorrect++;
+        userStats[currentQuestion.verb].correct++;
+
+        const left = roundQueue.length;
+        fb.innerHTML = `<div class="flex items-start gap-3">
+            <i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-500 mt-0.5 shrink-0"></i>
+            <div><p class="font-bold text-emerald-800 dark:text-emerald-400">Korrekt!</p>
+            <p class="text-sm text-emerald-700/90 dark:text-emerald-300/90 mt-0.5">
+                „${currentQuestion.correctAnswer}" ist richtig.${left>0 ? ` Noch ${left} Karte${left!==1?'n':''} übrig.` : ' Letzte Karte!'}
+            </p></div></div>`;
+        fb.className = 'mt-6 p-4 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-900/40';
+    } else {
+        // Reinsert into back half of queue
+        roundQueue.shift();
+        const at = roundQueue.length > 1
+            ? Math.floor(roundQueue.length / 2) + Math.floor(Math.random() * Math.ceil(roundQueue.length / 2))
+            : roundQueue.length;
+        roundQueue.splice(at, 0, { verb: currentQuestion.verb, tense: currentQuestion.tense, pronounIndex: currentQuestion.pronounIndex });
+
+        fb.innerHTML = `<div class="flex items-start gap-3">
+            <i data-lucide="alert-circle" class="w-5 h-5 text-rose-500 mt-0.5 shrink-0"></i>
+            <div><p class="font-bold text-rose-800 dark:text-rose-400">Leider nicht richtig</p>
+            <p class="text-sm font-semibold text-rose-800 dark:text-rose-300 mt-1.5">
+                Richtig: <span class="underline decoration-2 underline-offset-2">${currentQuestion.correctAnswer}</span>
+            </p>
+            <p class="text-xs text-rose-500/80 dark:text-rose-400/70 mt-1">Kommt später nochmal.</p>
+            </div></div>`;
+        fb.className = 'mt-6 p-4 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/40';
+    }
+
+    localStorage.setItem('dd8_verb_stats_v3', JSON.stringify(userStats));
+    saveSession();
+    updateStatsUI();
+    lucide.createIcons();
+
+    inp.disabled = true;
+    document.getElementById('check-btn').classList.add('hidden');
+    const nextBtn = document.getElementById('next-btn');
+    nextBtn.textContent = roundQueue.length === 0 ? '🎉  Runde abschliessen' : 'Nächstes Verb →';
+    nextBtn.classList.remove('hidden');
+    nextBtn.focus();
+}
+
+// ── Completion ─────────────────────────────────────────────────────────────
+function showCompletion() {
+    clearSession();
+    document.getElementById('question-state').classList.add('hidden');
+    document.getElementById('completion-state').classList.remove('hidden');
+    document.getElementById('completion-score').textContent = `${roundTotal} / ${roundTotal}`;
+    lucide.createIcons();
+}
+
+init();
+</script>
+</body>
+</html>
