@@ -1,2 +1,2 @@
 # franzverbs
-## https://franzverbs.redsystems.ch/
+## https://franz.redsystems.ch/
