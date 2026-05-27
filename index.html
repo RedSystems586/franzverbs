@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Französisch Verbentrainer - DD8</title>
-    <!-- Tailwind CSS für ein modernes, responsives Interface -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -21,7 +20,6 @@
             }
         }
     </script>
-    <!-- Lucide Icons für ansprechende Symbole -->
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body class="bg-gray-50 text-gray-900 dark:bg-gray-950 dark:text-gray-100 min-h-screen transition-colors duration-200">
@@ -75,8 +73,8 @@
                     Verben (Verbes)
                 </h2>
                 <div class="flex gap-2">
-                    <button onclick="toggleAllVerbs(true)" class="text-xs bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-750 px-2.5 py-1.5 rounded font-medium">Alle</button>
-                    <button onclick="toggleAllVerbs(false)" class="text-xs bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-750 px-2.5 py-1.5 rounded font-medium">Keine</button>
+                    <button onclick="toggleAllVerbs(true)" class="text-xs bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-750 px-2.5 py-1.5 rounded font-medium transition">Alle</button>
+                    <button onclick="toggleAllVerbs(false)" class="text-xs bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-750 px-2.5 py-1.5 rounded font-medium transition">Keine</button>
                 </div>
             </div>
             
@@ -98,7 +96,7 @@
                 <i data-lucide="award" class="w-4 h-4 text-yellow-500"></i>
                 <span id="session-stats" class="font-medium">Richtig: 0 / 0</span>
             </div>
-            <button onclick="backToSetup()" class="text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1 font-medium">
+            <button onclick="backToSetup()" class="text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1 font-medium transition">
                 <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i>
                 Auswahl ändern
             </button>
@@ -113,12 +111,12 @@
 
         <!-- Eingabebereich -->
         <div class="mb-6">
-            <label for="answer-input" class="block text-sm font-semibold text-gray-700 dark:text-gray-350 mb-2">Konjugiere für:</label>
-            <div class="flex items-stretch gap-2">
-                <span id="q-pronoun" class="flex items-center justify-center px-4 bg-gray-100 dark:bg-gray-850 border border-gray-200 dark:border-gray-750 rounded-l-lg font-bold text-lg min-w-[100px] text-blue-600 dark:text-blue-400">
+            <label for="answer-input" class="block text-sm font-semibold text-gray-700 dark:text-gray-350 mb-2">Konjugiere:</label>
+            <div class="flex items-stretch gap-0 rounded-lg shadow-sm">
+                <span id="q-pronoun" class="flex items-center justify-center px-4 bg-gray-100 dark:bg-gray-850 border border-gray-200 dark:border-gray-750 rounded-l-lg font-bold text-lg min-w-[90px] text-blue-600 dark:text-blue-400">
                     Elles
                 </span>
-                <input type="text" id="answer-input" placeholder="Lösung eingeben..." autocomplete="off" class="w-full px-4 py-3 bg-white dark:bg-gray-850 border-y border-r border-gray-200 dark:border-gray-750 rounded-r-lg text-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition">
+                <input type="text" id="answer-input" placeholder="z.B. sont allées" autocomplete="off" class="w-full px-4 py-3 bg-white dark:bg-gray-850 border-y border-r border-gray-200 dark:border-gray-750 rounded-r-lg text-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition">
             </div>
         </div>
 
@@ -139,211 +137,209 @@
 </div>
 
 <script>
-    // Vollständige und fehlerfreie Verbenliste basierend auf den Buchseiten im Anhang
+    // Die Verbenliste enthält jetzt ausschliesslich den zu tippenden Verb-Teil
     const verbData = {
         "acheter": {
             translation: "kaufen",
-            "Présent": ["j'achète", "tu achètes", "il achète", "nous achetons", "vous achetez", "elles achètent"],
-            "Imparfait": ["j'achetais", "tu achetais", "il achetait", "nous achetions", "vous achetiez", "elles achetaient"],
-            "Passé composé": ["j'ai acheté", "tu as acheté", "il a acheté", "nous avons acheté", "vous avez acheté", "elles ont acheté"]
+            "Présent": ["achète", "achètes", "achète", "achetons", "achetez", "achètent"],
+            "Imparfait": ["achetais", "achetais", "achetait", "achetions", "achetiez", "achetaient"],
+            "Passé composé": ["ai acheté", "as acheté", "a acheté", "avons acheté", "avez acheté", "ont acheté"]
         },
         "aller": {
             translation: "gehen",
-            "Présent": ["je vais", "tu vas", "il va", "nous allons", "vous allez", "elles vont"],
-            "Imparfait": ["j'allais", "tu allais", "il allait", "nous allions", "vous alliez", "elles allaient"],
-            "Passé composé": ["je suis allé", "tu es allé", "il est allé", "nous sommes allés", "vous êtes allés", "elles sont allées"]
+            "Présent": ["vais", "vas", "va", "allons", "allez", "vont"],
+            "Imparfait": ["allais", "allais", "allait", "allions", "alliez", "allaient"],
+            "Passé composé": ["suis allé", "es allé", "est allé", "sommes allés", "êtes allés", "sont allées"]
         },
         "appeler": {
             translation: "rufen, anrufen",
-            "Présent": ["j'appelle", "tu appelles", "il appelle", "nous appelons", "vous appelez", "elles appellent"],
-            "Imparfait": ["j'appelais", "tu appelais", "il appelait", "nous appelions", "vous appeliez", "elles appelaient"],
-            "Passé composé": ["j'ai appelé", "tu as appelé", "il a appelé", "nous avons appelé", "vous avez appelé", "elles ont appelé"]
+            "Présent": ["appelle", "appelles", "appelle", "appelons", "appelez", "appellent"],
+            "Imparfait": ["appelais", "appelais", "appelait", "appelions", "appeliez", "appelaient"],
+            "Passé composé": ["ai appelé", "as appelé", "a appelé", "avons appelé", "avez appelé", "ont appelé"]
         },
         "attendre": {
             translation: "warten",
-            "Présent": ["j'attends", "tu attends", "il attend", "nous attendons", "vous attendez", "elles attendent"],
-            "Imparfait": ["j'attendais", "tu attendais", "il attendait", "nous attendions", "vous attendiez", "elles attendaient"],
-            "Passé composé": ["j'ai attendu", "tu as attendu", "il a attendu", "nous avons attendu", "vous avez attendu", "elles ont attendu"]
+            "Présent": ["attends", "attends", "attend", "attendons", "attendez", "attendent"],
+            "Imparfait": ["attendais", "attendais", "attendait", "attendions", "attendiez", "attendaient"],
+            "Passé composé": ["ai attendu", "as attendu", "a attendu", "avons attendu", "avez attendu", "ont attendu"]
         },
         "avoir": {
             translation: "haben",
-            "Présent": ["j'ai", "tu as", "il a", "nous avons", "vous avez", "elles ont"],
-            "Imparfait": ["j'avais", "tu avais", "il avait", "nous avions", "vous aviez", "elles avaient"],
-            "Passé composé": ["j'ai eu", "tu as eu", "il a eu", "nous avons eu", "vous avez eu", "elles ont eu"]
+            "Présent": ["ai", "as", "a", "avons", "avez", "ont"],
+            "Imparfait": ["avais", "avais", "avait", "avions", "aviez", "avaient"],
+            "Passé composé": ["ai eu", "as eu", "a eu", "avons eu", "avez eu", "ont eu"]
         },
         "boire": {
             translation: "trinken",
-            "Présent": ["je bois", "tu bois", "il boit", "nous buvons", "vous buvez", "elles boivent"],
-            "Imparfait": ["je buvais", "tu buvais", "il buvait", "nous buvions", "vous buviez", "elles buvaient"],
-            "Passé composé": ["j'ai bu", "tu as bu", "il a bu", "nous avons bu", "vous avez bu", "elles ont bu"]
+            "Présent": ["bois", "bois", "boit", "buvons", "buvez", "boivent"],
+            "Imparfait": ["buvais", "buvais", "buvait", "buvions", "buviez", "buvaient"],
+            "Passé composé": ["ai bu", "as bu", "a bu", "avons bu", "avez bu", "ont bu"]
         },
         "chanter": {
             translation: "singen",
-            "Présent": ["je chante", "tu chantes", "il chante", "nous chantons", "vous chantez", "elles chantent"],
-            "Imparfait": ["je chantais", "tu chantais", "il chantait", "nous chantions", "vous chantiez", "elles chantaient"],
-            "Passé composé": ["j'ai chanté", "tu as chanté", "il a chanté", "nous avons chanté", "vous avez chanté", "elles ont chanté"]
+            "Présent": ["chante", "chantes", "chante", "chantons", "chantez", "chantent"],
+            "Imparfait": ["chantais", "chantais", "chantait", "chantions", "chantiez", "chantaient"],
+            "Passé composé": ["ai chanté", "as chanté", "a chanté", "avons chanté", "avez chanté", "ont chanté"]
         },
         "commencer": {
             translation: "beginnen",
-            "Présent": ["je commence", "tu commences", "il commence", "nous commençons", "vous commencez", "elles commencent"],
-            "Imparfait": ["je commençais", "tu commençais", "il commençait", "nous commencions", "vous commenciez", "elles commençaient"],
-            "Passé composé": ["j'ai commencé", "tu as commencé", "il a commencé", "nous avons commencé", "vous avez commencé", "elles ont commencé"]
+            "Présent": ["commence", "commences", "commence", "commençons", "commencez", "commencent"],
+            "Imparfait": ["commençais", "commençais", "commençait", "commencions", "commenciez", "commençaient"],
+            "Passé composé": ["ai commencé", "as commencé", "a commencé", "avons commencé", "avez commencé", "ont commencé"]
         },
         "conduire": {
             translation: "fahren, lenken",
-            "Présent": ["je conduis", "tu conduis", "il conduit", "nous conduisons", "vous conduisez", "elles conduisent"],
-            "Imparfait": ["je conduisais", "tu conduisais", "il conduisait", "nous conduisions", "vous conduisiez", "elles conduisaient"],
-            "Passé composé": ["j'ai conduit", "tu as conduit", "il a conduit", "nous avons conduit", "vous avez conduit", "elles ont conduit"]
+            "Présent": ["conduis", "conduis", "conduit", "conduisons", "conduisez", "conduisent"],
+            "Imparfait": ["conduisais", "conduisais", "conduisait", "conduisions", "conduisiez", "conduisaient"],
+            "Passé composé": ["ai conduit", "as conduit", "a conduit", "avons conduit", "avez conduit", "ont conduit"]
         },
         "connaître": {
             translation: "kennen",
-            "Présent": ["je connais", "tu connais", "il connaît", "nous connaissons", "vous connaissez", "elles connaissent"],
-            "Imparfait": ["je connaissais", "tu connaissais", "il connaissait", "nous connaissions", "vous connaissiez", "elles connaissaient"],
-            "Passé composé": ["j'ai connu", "tu as connu", "il a connu", "nous avons connu", "vous avez connu", "elles ont connu"]
+            "Présent": ["connais", "connais", "connaît", "connaissons", "connaissez", "connaissent"],
+            "Imparfait": ["connaissais", "connaissais", "connaissait", "connaissions", "connaissiez", "connaissaient"],
+            "Passé composé": ["ai connu", "as connu", "a connu", "avons connu", "avez connu", "ont connu"]
         },
         "devoir": {
             translation: "müssen",
-            "Présent": ["je dois", "tu dois", "il doit", "nous devons", "vous devez", "elles doivent"],
-            "Imparfait": ["je devais", "tu devais", "il devait", "nous devions", "vous deviez", "elles devaient"],
-            "Passé composé": ["j'ai dû", "tu as dû", "il a dû", "nous avons dû", "vous avez dû", "elles ont dû"]
+            "Présent": ["dois", "dois", "doit", "devons", "devez", "doivent"],
+            "Imparfait": ["devais", "devais", "devait", "devions", "deviez", "devaient"],
+            "Passé composé": ["ai dû", "as dû", "a dû", "avons dû", "avez dû", "ont dû"]
         },
         "dire": {
             translation: "sagen",
-            "Présent": ["je dis", "tu dis", "il dit", "nous disons", "vous dites", "elles disent"],
-            "Imparfait": ["je disais", "tu disais", "il disait", "nous disions", "vous disiez", "elles disaient"],
-            "Passé composé": ["j'ai dit", "tu as dit", "il a dit", "nous avons dit", "vous avez dit", "elles ont dit"]
+            "Présent": ["dis", "dis", "dit", "disons", "dites", "disent"],
+            "Imparfait": ["disais", "disais", "disait", "disions", "disiez", "disaient"],
+            "Passé composé": ["ai dit", "as dit", "a dit", "avons dit", "avez dit", "ont dit"]
         },
         "dormir": {
             translation: "schlafen",
-            "Présent": ["je dors", "tu dors", "il dort", "nous dormons", "vous dormez", "elles dorment"],
-            "Imparfait": ["je dormais", "tu dormais", "il dormait", "nous dormions", "vous dormiez", "elles dormaient"],
-            "Passé composé": ["j'ai dormi", "tu as dormi", "il a dormi", "nous avons dormi", "vous avez dormi", "elles ont dormi"]
+            "Présent": ["dors", "dors", "dort", "dormons", "dormez", "dorment"],
+            "Imparfait": ["dormais", "dormais", "dormait", "dormions", "dormiez", "dormaient"],
+            "Passé composé": ["ai dormi", "as dormi", "a dormi", "avons dormi", "avez dormi", "ont dormi"]
         },
         "écrire": {
             translation: "schreiben",
-            "Présent": ["j'écris", "tu écris", "il écrit", "nous écrivons", "vous écrivez", "elles écrivent"],
-            "Imparfait": ["j'écrivais", "tu écrivais", "il écrivait", "nous écrivions", "vous écriviez", "elles écrivaient"],
-            "Passé composé": ["j'ai écrit", "tu as écrit", "il a écrit", "nous avons écrit", "vous avez écrit", "elles ont écrit"]
+            "Présent": ["écris", "écris", "écrit", "écrivons", "écrivez", "écrivent"],
+            "Imparfait": ["écrivais", "écrivais", "écrivait", "écrivions", "écriviez", "écrivaient"],
+            "Passé composé": ["ai écrit", "as écrit", "a écrit", "avons écrit", "avez écrit", "ont écrit"]
         },
         "envoyer": {
             translation: "schicken",
-            "Présent": ["j'envoie", "tu envoies", "il envoie", "nous envoyons", "vous envoyez", "elles envoient"],
-            "Imparfait": ["j'envoyais", "tu envoyais", "il envoyait", "nous envoyions", "vous envoyiez", "elles envoyaient"],
-            "Passé composé": ["j'ai envoyé", "tu as envoyé", "il a envoyé", "nous avons envoyé", "vous avez envoyé", "elles ont envoyé"]
+            "Présent": ["envoie", "envoies", "envoie", "envoyons", "envoyez", "envoient"],
+            "Imparfait": ["envoyais", "envoyais", "envoyait", "envoyions", "envoyiez", "envoyaient"],
+            "Passé composé": ["ai envoyé", "as envoyé", "a envoyé", "avons envoyé", "avez envoyé", "ont envoyé"]
         },
         "être": {
             translation: "sein",
-            "Présent": ["je suis", "tu es", "il est", "nous sommes", "vous êtes", "elles sont"],
-            "Imparfait": ["j'étais", "tu étais", "il était", "nous étions", "vous étiez", "elles étaient"],
-            "Passé composé": ["j'ai été", "tu as été", "il a été", "nous avons été", "vous avez été", "elles ont été"]
+            "Présent": ["suis", "es", "est", "sommes", "êtes", "sont"],
+            "Imparfait": ["étais", "étais", "était", "étions", "étiez", "étaient"],
+            "Passé composé": ["ai été", "as été", "a été", "avons été", "avez été", "ont été"]
         },
         "faire": {
             translation: "machen",
-            "Présent": ["je fais", "tu fais", "il fait", "nous faisons", "vous faites", "elles font"],
-            "Imparfait": ["je faisais", "tu faisais", "il faisait", "nous faisions", "vous faisiez", "elles faisaient"],
-            "Passé composé": ["j'ai fait", "tu as fait", "il a fait", "nous avons fait", "vous avez fait", "elles ont fait"]
+            "Présent": ["fais", "fais", "fait", "faisons", "faites", "font"],
+            "Imparfait": ["faisais", "faisais", "faisait", "faisions", "faisiez", "faisaient"],
+            "Passé composé": ["ai fait", "as fait", "a fait", "avons fait", "avez fait", "ont fait"]
         },
         "finir": {
             translation: "beenden",
-            "Présent": ["je finis", "tu finis", "il finit", "nous finissons", "vous finissez", "elles finissent"],
-            "Imparfait": ["je finissais", "tu finissais", "il finissait", "nous finissions", "vous finissiez", "elles finissaient"],
-            "Passé composé": ["j'ai fini", "tu as fini", "il a fini", "nous avons fini", "vous avez fini", "elles ont fini"]
+            "Présent": ["finis", "finis", "finit", "finissons", "finissez", "finissent"],
+            "Imparfait": ["finissais", "finissais", "finissait", "finissions", "finissiez", "finissaient"],
+            "Passé composé": ["ai fini", "as fini", "a fini", "avons fini", "avez fini", "ont fini"]
         },
         "lire": {
             translation: "lesen",
-            "Présent": ["je lis", "tu lis", "il lit", "nous lisons", "vous lisez", "elles lisent"],
-            "Imparfait": ["je lisais", "tu lisais", "il lisait", "nous lisions", "vous lisiez", "elles lisaient"],
-            "Passé composé": ["j'ai lu", "tu as lu", "il a lu", "nous avons lu", "vous avez lu", "elles ont lu"]
+            "Présent": ["lis", "lis", "lit", "lisons", "lisez", "lisent"],
+            "Imparfait": ["lisais", "lisais", "lisait", "lisions", "lisiez", "lisaient"],
+            "Passé composé": ["ai lu", "as lu", "a lu", "avons lu", "avez lu", "ont lu"]
         },
         "manger": {
             translation: "essen",
-            "Présent": ["je mange", "tu manges", "il mange", "nous mangeons", "vous mangez", "elles mangent"],
-            "Imparfait": ["je mangeais", "tu mangeais", "il mangeait", "nous mangions", "vous mangiez", "elles mangeaient"],
-            "Passé composé": ["j'ai mangé", "tu as mangé", "il a mangé", "nous avons mangé", "vous avez mangé", "elles ont mangé"]
+            "Présent": ["mange", "manges", "mange", "mangeons", "mangez", "mangent"],
+            "Imparfait": ["mangeais", "mangeais", "mangeait", "mangions", "mangiez", "mangeaient"],
+            "Passé composé": ["ai mangé", "as mangé", "a mangé", "avons mangé", "avez mangé", "ont mangé"]
         },
         "mettre": {
             translation: "stellen, legen",
-            "Présent": ["je mets", "tu mets", "il met", "nous mettons", "vous mettez", "elles mettent"],
-            "Imparfait": ["je mettais", "tu mettais", "il mettait", "nous mettions", "vous mettiez", "elles mettaient"],
-            "Passé composé": ["j'ai mis", "tu as mis", "il a mis", "nous avons mis", "vous avez mis", "elles ont mis"]
+            "Présent": ["mets", "mets", "met", "mettons", "mettez", "mettent"],
+            "Imparfait": ["mettais", "mettais", "mettait", "mettions", "mettiez", "mettaient"],
+            "Passé composé": ["ai mis", "as mis", "a mis", "avons mis", "avez mis", "ont mis"]
         },
         "ouvrir": {
             translation: "öffnen",
-            "Présent": ["j'ouvre", "tu ouvres", "il ouvre", "nous ouvrons", "vous ouvrez", "elles ouvrent"],
-            "Imparfait": ["j'ouvrais", "tu ouvrais", "il ouvrait", "nous ouvrions", "vous ouvriez", "elles ouvraient"],
-            "Passé composé": ["j'ai ouvert", "tu as ouvert", "il a ouvert", "nous avons ouvert", "vous avez ouvert", "elles ont ouvert"]
+            "Présent": ["ouvre", "ouvres", "ouvre", "ouvrons", "ouvrez", "ouvrent"],
+            "Imparfait": ["ouvrais", "ouvrais", "ouvrait", "ouvrions", "ouvriez", "ouvraient"],
+            "Passé composé": ["ai ouvert", "as ouvert", "a ouvert", "avons ouvert", "avez ouvert", "ont ouvert"]
         },
         "partir": {
             translation: "weggehen",
-            "Présent": ["je pars", "tu pars", "il part", "nous partons", "vous partez", "elles partent"],
-            "Imparfait": ["je partais", "tu partais", "il partait", "nous partions", "vous partiez", "elles partaient"],
-            "Passé composé": ["je suis parti", "tu es parti", "il est parti", "nous sommes partis", "vous êtes partis", "elles sont parties"]
+            "Présent": ["pars", "pars", "part", "partons", "partez", "partent"],
+            "Imparfait": ["partais", "partais", "partait", "partions", "partiez", "partaient"],
+            "Passé composé": ["suis parti", "es parti", "est parti", "sommes partis", "êtes partis", "sont parties"]
         },
         "pouvoir": {
             translation: "können",
-            "Présent": ["je peux", "tu peux", "il peut", "nous pouvons", "vous pouvez", "elles peuvent"],
-            "Imparfait": ["je pouvais", "tu pouvais", "il pouvait", "nous pouvions", "vous pouviez", "elles pouvaient"],
-            "Passé composé": ["j'ai pu", "tu as pu", "il a pu", "nous avons pu", "vous avez pu", "elles ont pu"]
+            "Présent": ["peux", "peux", "peut", "pouvons", "pouvez", "peuvent"],
+            "Imparfait": ["pouvais", "pouvais", "pouvait", "pouvions", "pouviez", "pouvaient"],
+            "Passé composé": ["ai pu", "as pu", "a pu", "avons pu", "avez pu", "ont pu"]
         },
         "prendre": {
             translation: "nehmen",
-            "Présent": ["je prends", "tu prends", "il prend", "nous prenons", "vous prenez", "elles prennent"],
-            "Imparfait": ["je prenais", "tu prenais", "il prenait", "nous prenions", "vous preniez", "elles prenaient"],
-            "Passé composé": ["j'ai pris", "tu as pris", "il a pris", "nous avons pris", "vous avez pris", "elles ont pris"]
+            "Présent": ["prends", "prends", "prend", "prenons", "prenez", "prennent"],
+            "Imparfait": ["prenais", "prenais", "prenait", "prenions", "preniez", "prenaient"],
+            "Passé composé": ["ai pris", "as pris", "a pris", "avons pris", "avez pris", "ont pris"]
         },
         "recevoir": {
             translation: "bekommen, empfangen",
-            "Présent": ["je reçois", "tu reçois", "il reçoit", "nous recevons", "vous recevez", "elles reçoivent"],
-            "Imparfait": ["je recevais", "tu recevais", "il recevait", "nous recevions", "vous receviez", "elles recevaient"],
-            "Passé composé": ["j'ai reçu", "tu as reçu", "il a reçu", "nous avons reçu", "vous avez reçu", "elles ont reçu"]
+            "Présent": ["reçois", "reçois", "reçoit", "recevons", "recevez", "reçoivent"],
+            "Imparfait": ["recevais", "recevais", "recevait", "recevions", "receviez", "recevaient"],
+            "Passé composé": ["ai reçu", "as reçu", "a reçu", "avons reçu", "avez reçu", "ont reçu"]
         },
         "répéter": {
             translation: "wiederholen",
-            "Présent": ["je répète", "tu répètes", "il répète", "nous répétons", "vous répétez", "elles répètent"],
-            "Imparfait": ["je répétais", "tu répétais", "il répétait", "nous répétions", "vous répétiez", "elles répétaient"],
-            "Passé composé": ["j'ai répété", "tu as répété", "il a répété", "nous avons répété", "vous avez répété", "elles ont répété"]
+            "Présent": ["répète", "répètes", "répète", "répétons", "répétez", "répètent"],
+            "Imparfait": ["répétais", "répétais", "répétait", "répétions", "répétiez", "répétaient"],
+            "Passé composé": ["ai répété", "as répété", "a répété", "avons répété", "avez répété", "ont répété"]
         },
         "rire": {
             translation: "lachen",
-            "Présent": ["je ris", "tu ris", "il rit", "nous rions", "vous riez", "elles rient"],
-            "Imparfait": ["je riais", "tu riais", "il riait", "nous riions", "vous riiez", "elles riaient"],
-            "Passé composé": ["j'ai ri", "tu as ri", "il a ri", "nous avons ri", "vous avez ri", "elles ont ri"]
+            "Présent": ["ris", "ris", "rit", "rions", "riez", "rient"],
+            "Imparfait": ["riais", "riais", "riait", "riions", "riiez", "riaient"],
+            "Passé composé": ["ai ri", "as ri", "a ri", "avons ri", "avez ri", "ont ri"]
         },
         "savoir": {
             translation: "wissen",
-            "Présent": ["je sais", "tu sais", "il sait", "nous savons", "vous savez", "elles savent"],
-            "Imparfait": ["je savais", "tu savais", "il savait", "nous savions", "vous saviez", "elles savaient"],
-            "Passé composé": ["j'ai su", "tu as su", "il a su", "nous avons su", "vous avez su", "elles ont su"]
+            "Présent": ["sais", "sais", "sait", "savons", "savez", "savent"],
+            "Imparfait": ["savais", "savais", "savait", "savions", "saviez", "savaient"],
+            "Passé composé": ["ai su", "as su", "a su", "avons su", "avez su", "ont su"]
         },
         "venir": {
             translation: "kommen",
-            "Présent": ["je viens", "tu viens", "il vient", "nous venons", "vous venez", "elles viennent"],
-            "Imparfait": ["je venais", "tu venais", "il venait", "nous venions", "vous veniez", "elles venaient"],
-            "Passé composé": ["je suis venu", "tu es venu", "il est venu", "nous sommes venus", "vous êtes venus", "elles sont venues"]
+            "Présent": ["viens", "viens", "vient", "venons", "venez", "viennent"],
+            "Imparfait": ["venais", "venais", "venait", "venions", "veniez", "venaient"],
+            "Passé composé": ["suis venu", "es venu", "est venu", "sommes venus", "êtes venus", "sont venues"]
         },
         "vivre": {
             translation: "leben",
-            "Présent": ["je vis", "tu vis", "il vit", "nous vivons", "vous vivez", "elles vivent"],
-            "Imparfait": ["je vivais", "tu vivais", "il vivait", "nous vivions", "vous viviez", "elles vivaient"],
-            "Passé composé": ["j'ai vécu", "tu as vécu", "il a vécu", "nous avons vécu", "vous avez vécu", "elles ont vécu"]
+            "Présent": ["vis", "vis", "vit", "vivons", "vivez", "vivent"],
+            "Imparfait": ["vivais", "vivais", "vivait", "vivions", "viviez", "vivaient"],
+            "Passé composé": ["ai vécu", "as vécu", "a vécu", "avons vécu", "avez vécu", "ont vécu"]
         },
         "voir": {
             translation: "sehen",
-            "Présent": ["je vois", "tu vois", "il voit", "nous voyons", "vous voyez", "elles voient"],
-            "Imparfait": ["je voyais", "tu voyais", "il voyait", "nous voyions", "vous voyiez", "elles voyaient"],
-            "Passé composé": ["j'ai vu", "tu as vu", "il a vu", "nous avons vu", "vous avez vu", "elles ont vu"]
+            "Présent": ["vois", "vois", "voit", "voyons", "voyez", "voient"],
+            "Imparfait": ["voyais", "voyais", "voyait", "voyions", "voyiez", "voyaient"],
+            "Passé composé": ["ai vu", "as vu", "a vu", "avons vu", "avez vu", "ont vu"]
         },
         "vouloir": {
             translation: "wollen",
-            "Présent": ["je veux", "tu veux", "il veut", "nous voulons", "vous voulez", "elles veulent"],
-            "Imparfait": ["je voulais", "tu voulais", "il voulait", "nous voulions", "vous vouliez", "elles voulaient"],
-            "Passé composé": ["j'ai voulu", "tu as voulu", "il a voulu", "nous avons voulu", "vous avez voulu", "elles ont voulu"]
+            "Présent": ["veux", "veux", "veut", "voulons", "voulez", "veulent"],
+            "Imparfait": ["voulais", "voulais", "voulait", "voulions", "vouliez", "voulaient"],
+            "Passé composé": ["ai voulu", "as voulu", "a voulu", "avons voulu", "avez voulu", "ont voulu"]
         }
     };
 
-    const pronouns = ["Je / J'", "Tu", "Il / Elle / On", "Nous", "Vous", "Elles"];
-    
-    // Grammatikalisch korrekte Einordnung der Pronomen pro Zeile in der Bildmatrix
+    // Feste Pronomen-Zuordnungen
     const displayPronouns = {
         0: "Je",
         1: "Tu",
@@ -359,10 +355,8 @@
     let sessionCorrect = 0;
     let sessionTotal = 0;
 
-    // Lokalen Fortschrittsspeicher laden
-    let userStats = JSON.parse(localStorage.getItem('dd8_verb_stats_v2')) || {};
+    let userStats = JSON.parse(localStorage.getItem('dd8_verb_stats_v3')) || {};
 
-    // Initialisierung des UI
     function init() {
         const container = document.getElementById('verbs-container');
         container.innerHTML = '';
@@ -384,7 +378,6 @@
             container.appendChild(label);
         });
 
-        // Theme / Dark Mode Handler
         const savedTheme = localStorage.getItem('dd8_theme') || 'light';
         if (savedTheme === 'dark') {
             document.documentElement.classList.add('dark');
@@ -392,7 +385,6 @@
             document.documentElement.classList.remove('dark');
         }
 
-        // Event Listener für Eingabefelder
         document.getElementById('answer-input').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
                 if (document.getElementById('check-btn').style.display !== 'none') {
@@ -406,7 +398,6 @@
         lucide.createIcons();
     }
 
-    // Dark-Mode Toggle
     document.getElementById('theme-toggle').addEventListener('click', () => {
         const isDark = document.documentElement.classList.contains('dark');
         if (isDark) {
@@ -451,28 +442,23 @@
         const selectedTense = selectedTenses[Math.floor(Math.random() * selectedTenses.length)];
         const pronounIndex = Math.floor(Math.random() * 6);
 
-        // Bestimme das Pronomen für die Anzeige
+        const correctAnswerRaw = verbData[selectedVerb][selectedTense][pronounIndex];
         let displayPronoun = displayPronouns[pronounIndex];
         
-        // Elisionsregel für Je / J' anwenden
+        // Smarter "Je" zu "J'" Wechsel
+        // Prüft, ob das zu tippende Verb mit einem Vokal oder 'h' beginnt
         if (pronounIndex === 0) {
-            const fullAnswer = verbData[selectedVerb][selectedTense][0];
-            if (fullAnswer.startsWith("j'")) {
+            if (/^[aeiouéèêh]/i.test(correctAnswerRaw)) {
                 displayPronoun = "J'";
-            } else {
-                displayPronoun = "Je";
             }
         }
-
-        // Hole die exakte, realistische Antwort direkt aus der Matrix
-        const answerRaw = verbData[selectedVerb][selectedTense][pronounIndex];
 
         currentQuestion = {
             verb: selectedVerb,
             tense: selectedTense,
             pronounIndex: pronounIndex,
             displayPronoun: displayPronoun,
-            correctAnswer: answerRaw
+            correctAnswer: correctAnswerRaw
         };
 
         document.getElementById('q-verb').innerText = selectedVerb;
@@ -484,7 +470,6 @@
         inputField.value = '';
         inputField.disabled = false;
         
-        // Fokus auf das Eingabefeld setzen
         setTimeout(() => inputField.focus(), 50);
 
         document.getElementById('feedback-box').className = 'mt-6 p-4 rounded-lg hidden';
@@ -492,7 +477,6 @@
         document.getElementById('next-btn').classList.add('hidden');
     }
 
-    // Normalisiert Text, um Tippfehler bei mehrfachen Leerzeichen oder ungleicher Gross-/Kleinschreibung zu verzeihen
     function cleanText(str) {
         return str.toLowerCase().trim().replace(/\s+/g, ' ').replace(/[’']/g, "'");
     }
@@ -502,7 +486,6 @@
         let userAns = cleanText(inputField.value);
         let correctAns = cleanText(currentQuestion.correctAnswer);
 
-        // Verhindert leere Eingaben
         if (!userAns) return;
 
         sessionTotal++;
@@ -515,7 +498,6 @@
         const feedbackBox = document.getElementById('feedback-box');
         feedbackBox.classList.remove('hidden');
 
-        // Prüfen, ob die Antwort passt
         if (userAns === correctAns) {
             sessionCorrect++;
             userStats[currentQuestion.verb].correct++;
@@ -524,8 +506,8 @@
                 <div class="flex items-start gap-3">
                     <i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-500 mt-0.5 shrink-0"></i>
                     <div>
-                        <p class="font-bold text-emerald-800 dark:text-emerald-400">Hervorragend!</p>
-                        <p class="text-sm text-emerald-700/90 dark:text-emerald-300/90 mt-0.5">"${currentQuestion.correctAnswer}" ist absolut fehlerfrei.</p>
+                        <p class="font-bold text-emerald-800 dark:text-emerald-400">Korrekt!</p>
+                        <p class="text-sm text-emerald-700/90 dark:text-emerald-300/90 mt-0.5">"${currentQuestion.correctAnswer}" ist richtig.</p>
                     </div>
                 </div>
             `;
@@ -536,9 +518,6 @@
                     <i data-lucide="alert-circle" class="w-5 h-5 text-rose-500 mt-0.5 shrink-0"></i>
                     <div>
                         <p class="font-bold text-rose-800 dark:text-rose-400">Leider nicht ganz richtig</p>
-                        <p class="text-sm text-rose-700/90 dark:text-rose-300/90 mt-1">
-                            Eingegeben: <span class="line-through opacity-70">${inputField.value}</span>
-                        </p>
                         <p class="text-sm font-semibold text-rose-800 dark:text-rose-300 mt-1.5">
                             Richtig: <span class="underline decoration-2 underline-offset-2">${currentQuestion.correctAnswer}</span>
                         </p>
@@ -548,8 +527,7 @@
             feedbackBox.className = 'mt-6 p-4 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/40 transition duration-200';
         }
 
-        // Statistiken persistent im Browser sichern
-        localStorage.setItem('dd8_verb_stats_v2', JSON.stringify(userStats));
+        localStorage.setItem('dd8_verb_stats_v3', JSON.stringify(userStats));
         updateStatsUI();
         lucide.createIcons();
 
@@ -563,7 +541,6 @@
         document.getElementById('session-stats').innerText = `Richtig: ${sessionCorrect} / ${sessionTotal}`;
     }
 
-    // Applikation starten
     init();
 </script>
 
